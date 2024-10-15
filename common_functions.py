@@ -1,10 +1,10 @@
 import re
-from flask import jsonify
+from flask import jsonify, make_response
 
 
 
 def return_error(error="SOMETHING_WENT_WRONG", message="Error", data={}, code=200):
-    return jsonify({"success": False, "error": error, "message": message, "data": data})
+    return make_response(jsonify({"success": False, "error": error, "message": message, "data": data}), 401)
 
 
 def return_success(data={}, status="SUCCESS", code=200):

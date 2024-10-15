@@ -17,7 +17,7 @@ from email.mime.multipart import MIMEMultipart
 # Configuration
 file_path = 'Credentials.txt'
 EMAIL_ADDRESS, EMAIL_PASSWORD = read_credentials_from_file(file_path)
-reCAPTCHA=1
+reCAPTCHA=0
 
 
 @app.route("/submit_form",methods=["POST"])
@@ -25,20 +25,23 @@ def submit_form():
     try:
         data = request.get_json()
         print(data)
-        f_name = data["first_name"]
-        l_name=data["last_name"]
+        f_name = data["firstName"]
+        l_name=data["lastName"]
         email = data["email"]
         if not valid_email(email):
             return return_error(message="Invalid email")
         phone = data["phone"]
         subject=data["subject"]
         message = data["message"]
+
+        #  reCAPTCHA Code
+        code=data["code"]
         current_time = datetime.datetime.now(pytz.timezone('Asia/Kolkata'))
         # query={"name":name,"email":email,"message":message,"submitted_at":current_time}
         # response_db.insert_one(query)
 
         if not reCAPTCHA :
-            return return_error(message="reCAPTCHA verfication failed")
+            return return_error(message="reCAPTCHA verfication failed", code=401)
         #sending mail----------------------------
         mail_subject = "You got a new Form Response"
         body = f"Form Data:\n\nFirst Name - {f_name}\n\nLast Name - {l_name}\n\nEmail - {email}\n\nPhone - {phone}\n\nSubject - {subject}\n\nMessage - {message}\n\nSubmitted At - {current_time}"
